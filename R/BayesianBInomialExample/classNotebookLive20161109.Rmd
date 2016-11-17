@@ -5,7 +5,7 @@ output: html_notebook
 
 Esta es la versión en vivo del documento
 
-![](./images/cointoss.png)
+![](images/cointoss.PNG)
 
 Estos datos son una muestra de lanzamientos de monedas.
 
@@ -215,3 +215,4 @@ head(post_sample)
 ```
 
 ## Diagnóstico
+
