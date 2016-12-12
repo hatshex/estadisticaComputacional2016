@@ -1,6 +1,8 @@
 ---
 title: "Inferencia bayesiana for dummies (en vivo)"
-output: html_notebook
+output:
+  html_document: default
+  html_notebook: default
 ---
 
 Esta es la versión en vivo del documento
@@ -121,6 +123,7 @@ $$
 \log(g(\theta)) = loglikelihood + logprior
 $$
 ## Implementación de la simulación
+
 ```{r, engine = 'Rcpp'}
 #include <Rcpp.h>
 using namespace Rcpp;
@@ -199,9 +202,9 @@ Probemos la cadena de simulaciones.
 
 ```{r}
 theta_0 <- .1
-n_sim <- 300
+n_sim <- 1000
 jump <- .05
-prior_a <- .3
+prior_a <- .8
 prior_b <- .3
 post_sample <- run_mcmc(
   theta_0 = theta_0,
@@ -216,3 +219,72 @@ head(post_sample)
 
 ## Diagnóstico
 
+<<<<<<< HEAD
+=======
+### 1 Trace Plots / Trayectorias
+
+Graficar la trayectorias, en el eje horizontal en número de simulación y en el vertical el valor del parámetro
+
+```{r}
+plot(post_sample, type="l", col="blue")
+abline(h = mean(X$toss), col="red")
+```
+
+
+### 2 Burn-in / calentamiento
+
+Hay que quitar un porcentaje inicial de las observaciones.
+
+```{r}
+burnin <- .15
+start <- round(.15*length(post_sample))
+post_sample <- post_sample[-(1:start)]
+plot(post_sample, type="l", col="blue")
+abline(h = mean(X$toss), col="red")
+```
+
+
+### 3 Ver el histograma de las simulaciones y comparar con a priori
+
+Histograma
+
+```{r}
+hist(post_sample, breaks = 20)
+```
+
+Estimar densidad
+
+```{r}
+dens <- density(post_sample)
+plot(dens$x, dens$y, type = "l", col = "blue")
+```
+
+Vamos a ponerla en la misma gráfica que la a priori para comparar
+
+```{r}
+post <- data.frame(
+  tipo = "posterior",
+  x = dens$x,
+  densidad = dens$y
+)
+prior <- data.frame(
+  tipo = "a priori",
+  x = seq(0, 1, .01),
+  densidad = dbeta(seq(0, 1,.01), prior_a, prior_b)
+)
+dat <- rbind(prior, post)
+ggplot(dat, aes(x=x, y=densidad, color=tipo)) +
+  geom_line(size = 1) +
+  geom_vline(aes(xintercept = mean(X$toss)))
+```
+
+
+
+
+
+
+
+
+
+
+>>>>>>> 500b1c2950a3e0f3bc362ea5e8c1bde1f7fcf63c
